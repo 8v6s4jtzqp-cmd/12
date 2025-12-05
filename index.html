@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI 고민 상담소</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      width: 100%;
+      max-width: 900px;
+      background: #020617;
+      border-radius: 16px;
+      border: 1px solid #1f2937;
+      padding: 20px 20px 24px;
+      box-sizing: border-box;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #9ca3af;
+      margin-bottom: 16px;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .card {
+      background: #020617;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      padding: 14px;
+      box-sizing: border-box;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .card-desc {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 10px;
+    }
+    .field {
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+    input, select, textarea {
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 13px;
+      padding: 8px 10px;
+      outline: none;
+    }
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: #3b82f6;
+    }
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .btn-main {
+      background: #3b82f6;
+      color: #f9fafb;
+    }
+    .btn-sub {
+      background: transparent;
+      color: #e5e7eb;
+      border: 1px solid #4b5563;
+    }
+    .result-box {
+      border-radius: 10px;
+      border: 1px solid #374151;
+      padding: 10px;
+      font-size: 13px;
+      min-height: 140px;
+    }
+    .result-label {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 4px;
+    }
+    .result-placeholder {
+      font-size: 12px;
+      color: #6b7280;
+    }
+    .footer {
+      margin-top: 14px;
+      font-size: 11px;
+      color: #6b7280;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI 고민 상담소</h1>
+    <p class="subtitle">
+      사용자의 닉네임, 감정 상태, 고민 내용을 입력하면<br>
+      아래 영역에 AI 상담 결과가 표시될 예정인 웹 서비스의 프론트엔드 화면입니다.
+    </p>
+
+    <div class="layout">
+      <!-- 왼쪽: Input Form -->
+      <section class="card">
+        <div class="card-title">상담 요청 입력</div>
+        <div class="card-desc">AI에게 전달할 정보를 작성해 주세요.</div>
+
+        <div class="field">
+          <label for="nickname">닉네임</label>
+          <input id="nickname" type="text" placeholder="예: 달빛토끼, 익명 등">
+        </div>
+
+        <div class="field">
+          <label for="mood">현재 감정 상태</label>
+          <select id="mood">
+            <option value="">선택해 주세요</option>
+            <option value="행복">😊 행복 / 설렘</option>
+            <option value="불안">😟 불안 / 걱정</option>
+            <option value="우울">😢 슬픔 / 우울</option>
+            <option value="짜증">😤 분노 / 짜증</option>
+            <option value="혼란">🤯 혼란 / 고민 중</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="concern">구체적인 고민 내용</label>
+          <textarea id="concern" placeholder="예: 진로, 학업, 인간관계 등 구체적으로 적어 주세요."></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-main" onclick="previewResult()">상담 요청 보내기</button>
+          <button class="btn-sub" onclick="resetForm()">초기화</button>
+        </div>
+      </section>
+
+      <!-- 오른쪽: Result Area -->
+      <section class="card">
+        <div class="card-title">AI 상담 결과 (미리보기)</div>
+        <div class="card-desc">
+          다음 주에 LLM API와 연결되면<br>
+          이 영역에 실제 AI 응답이 표시됩니다.
+        </div>
+
+        <div class="result-box">
+          <div class="result-label">OUTPUT</div>
+          <div id="result" class="result-placeholder">
+            아직 상담 요청이 없습니다.<br>
+            왼쪽에서 정보를 입력한 후<br>
+            <b>“상담 요청 보내기”</b> 버튼을 눌러 보세요.
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">
+      <span>Input Form · Result Area · 프론트엔드만 구현</span>
+      <span>AI 멀티미디어 활용 · 기말프로젝트(1)</span>
+    </div>
+  </div>
+
+  <script>
+    function previewResult() {
+      const nickname = document.getElementById("nickname").value.trim();
+      const mood = document.getElementById("mood").value;
+      const concern = document.getElementById("concern").value.trim();
+      const result = document.getElementById("result");
+
+      if (!nickname || !mood || !concern) {
+        result.className = "";
+        result.style.color = "#f97316";
+        result.innerHTML = "⚠ 닉네임, 감정 상태, 고민 내용을 모두 입력해 주세요.";
+        return;
+      }
+
+      result.className = "";
+      result.style.color = "#e5e7eb";
+      result.innerHTML =
+        `<b>${nickname}</b> 님의 감정 상태는 <b>${mood}</b> 입니다.<br><br>` +
+        `<b>[고민 내용]</b><br>${concern.replace(/\n/g, "<br>")}<br><br>` +
+        `<b>[안내]</b><br>현재는 프론트엔드 UI만 구현된 상태이며,<br>` +
+        `다음 주에 LLM API와 연결하여 실제 상담 결과를 표시할 예정입니다.`;
+    }
+
+    function resetForm() {
+      document.getElementById("nickname").value = "";
+      document.getElementById("mood").value = "";
+      document.getElementById("concern").value = "";
+      const result = document.getElementById("result");
+      result.className = "result-placeholder";
+      result.style.color = "#6b7280";
+      result.innerHTML =
+        "입력이 초기화되었습니다.<br>다시 정보를 입력한 후<br><b>“상담 요청 보내기”</b> 버튼을 눌러 보세요.";
+    }
+  </script>
+</body>
+</html>
