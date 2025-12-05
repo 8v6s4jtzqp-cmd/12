@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI 고민 상담소</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", system-ui, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0f172a, #111827);
+      color: #f9fafb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 18px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      padding: 24px 24px 28px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .title-box {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.9);
+      color: #bfdbfe;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #e5e7eb;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #9ca3af;
+    }
+
+    .status-box {
+      text-align: right;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .status-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+
+    .status-value {
+      font-weight: 600;
+      color: #f9fafb;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      margin-right: 4px;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 18px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.95);
+      border-radius: 14px;
+      padding: 16px 16px 18px;
+      border: 1px solid rgba(75, 85, 99, 0.7);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .card-desc {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    .pill {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(31, 41, 55, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      color: #9ca3af;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: #d1d5db;
+    }
+
+    .field {
+      margin-bottom: 10px;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 10px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 8px 10px;
+      font-size: 13px;
+      color: #e5e7eb;
+      outline: none;
+      transition: border 0.15s, box-shadow 0.15s, background 0.15s;
+      resize: vertical;
+      min-height: 40px;
+    }
+
+    textarea {
+      min-height: 110px;
+      line-height: 1.5;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5);
+      background: rgba(15, 23, 42, 1);
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      border-radius: 999px;
+      font-size: 13px;
+      padding: 8px 16px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.08s ease, box-shadow 0.12s ease, background 0.15s ease, opacity 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-main {
+      background: linear-gradient(135deg, #3b82f6, #22c55e);
+      color: #0b1120;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.5);
+    }
+
+    .btn-main:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.7);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #e5e7eb;
+      border: 1px solid rgba(75, 85, 99, 0.9);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(31, 41, 55, 0.9);
+    }
+
+    .btn-sub {
+      background: rgba(15, 23, 42, 1);
+      color: #9ca3af;
+      border: 1px dashed rgba(75, 85, 99, 0.9);
+    }
+
+    .btn-sub:hover {
+      background: rgba(31, 41, 55, 0.95);
+      color: #e5e7eb;
+    }
+
+    .btn-icon {
+      font-size: 15px;
+      line-height: 1;
+    }
+
+    .result-area {
+      min-height: 150px;
+      background: radial-gradient(circle at top left, rgba(59, 130, 246, 0.16), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(22, 163, 74, 0.16), transparent 55%),
+                  rgba(15, 23, 42, 0.9);
+      border-radius: 12px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 12px;
+      font-size: 13px;
+      color: #e5e7eb;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-placeholder {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .result-label {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .footer {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: #6b7280;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <header class="header">
+      <div class="title-box">
+        <div class="badge">
+          <span class="badge-dot"></span>
+          AI 고민 상담소 · Frontend
+        </div>
+        <h1>나만의 AI 고민 상담소</h1>
+        <p class="subtitle">
+          사용자의 이름, 감정 상태, 고민 내용을 입력하면<br />
+          아래 영역에 AI 응답이 표시될 예정인 웹 서비스의 화면 설계입니다.
+        </p>
+      </div>
+      <div class="status-box">
+        <div class="status-label">CURRENT VIEWERS</div>
+        <div class="status-value">
+          <span class="status-dot"></span>
+          <span id="viewerCount">Ready: 0</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="grid">
+      <!-- 왼쪽: Input Form -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">상담 요청 입력</div>
+            <div class="card-desc">AI에게 전달할 정보를 작성해 주세요.</div>
+          </div>
+          <span class="pill">Input Form</span>
+        </div>
+
+        <div class="field">
+          <label for="nickname">닉네임</label>
+          <input id="nickname" type="text" placeholder="예: 달빛토끼, 익명 등" />
+          <div class="hint">상담 결과에 표시될 이름입니다.</div>
+        </div>
+
+        <div class="field">
+          <label for="mood">현재 감정 상태</label>
+          <select id="mood">
+            <option value="">선택해 주세요</option>
+            <option value="행복">😊 행복 / 설렘</option>
+            <option value="불안">😟 불안 / 걱정</option>
+            <option value="우울">😢 슬픔 / 우울</option>
+            <option value="짜증">😤 분노 / 짜증</option>
+            <option value="혼란">🤯 혼란 / 고민 중</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="concern">구체적인 고민 내용</label>
+          <textarea
+            id="concern"
+            placeholder="예: 요즘 진로와 학업, 그리고 인간관계 때문에 너무 복잡합니다. 어디서부터 정리해야 할지 모르겠어요..."
+          ></textarea>
+          <div class="hint">최대한 구체적으로 작성할수록, 더 섬세한 상담이 가능해집니다.</div>
+        </div>
+
+        <div class="field">
+          <label for="goal">AI에게 바라는 점</label>
+          <input
+            id="goal"
+            type="text"
+            placeholder="예: 용기를 주는 말, 구체적인 행동 계획, 오늘 당장 할 수 있는 한 가지 등"
+          />
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-main" onclick="sendRequest()">
+            <span class="btn-icon">▶</span>
+            상담 요청 보내기
+          </button>
+          <button class="btn-ghost" onclick="resetForm()">
+            초기화
+          </button>
+        </div>
+      </section>
+
+      <!-- 오른쪽: Result Area -->
+      <section class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">AI 상담 결과</div>
+            <div class="card-desc">
+              다음 주에 Backend와 LLM API를 연결하면<br />
+              이 영역에 실제 AI 응답이 표시됩니다.
+            </div>
+          </div>
+          <span class="pill">Result Area</span>
+        </div>
+
+        <div class="result-area" id="resultArea">
+          <div class="result-label">OUTPUT · PREVIEW</div>
+          <div id="resultContent" class="result-placeholder">
+            아직 상담 요청이 없습니다.<br />
+            왼쪽에서 정보를 입력한 후 <b>“상담 요청 보내기”</b> 버튼을 눌러보세요.<br /><br />
+            지금은 프론트엔드 화면 설계 단계이므로,<br />
+            실제 AI 응답 대신 미리보기 텍스트만 표시됩니다.
+          </div>
+        </div>
+
+        <div class="btn-row" style="margin-top: 10px;">
+          <button class="btn-sub" onclick="simulateTournament()">
+            가상 접속자 증가 테스트
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div>
+        <span class="tag">입력 양식(Input)</span>
+        <span class="tag">결과 영역(Result)</span>
+        <span class="tag">LLM API 연동은 다음 주</span>
+      </div>
+      <div>AI 멀티미디어 활용 · 기말 프로젝트 프론트엔드 디자인</div>
+    </footer>
+  </div>
+
+  <script>
+    // 나중에 Backend 서버 URL을 여기에 넣을 예정입니다.
+    const SERVER_URL = ""; // TODO: 추후 LLM API 서버 주소 입력 예정
+
+    function sendRequest() {
+      const nickname = document.getElementById("nickname").value.trim();
+      const mood = document.getElementById("mood").value;
+      const concern = document.getElementById("concern").value.trim();
+      const goal = document.getElementById("goal").value.trim();
+
+      const resultContent = document.getElementById("resultContent");
+
+      if (!nickname || !mood || !concern) {
+        resultContent.classList.remove("result-placeholder");
+        resultContent.innerHTML =
+          "⚠ 필수 항목이 비어 있습니다.<br />" +
+          "닉네임, 감정 상태, 고민 내용을 모두 입력해 주세요.";
+        return;
+      }
+
+      // 지금은 실제로 서버에 보내지 않고, 화면에 미리보기만 표시합니다.
+      const preview =
+        `<b>${nickname}</b> 님의 현재 감정 상태는 <b>${mood}</b> 입니다.<br /><br />` +
+        `<b>[고민 내용]</b><br />${concern.replace(/\n/g, "<br />")}<br /><br />` +
+        (goal
+          ? `<b>[AI에게 바라는 점]</b><br />${goal.replace(/\n/g, "<br />")}<br /><br />`
+          : "") +
+        `<b>[미리보기 안내]</b><br />지금은 프론트엔드 UI를 설계하는 단계입니다.<br />` +
+        `다음 주에는 이 입력값들을 LLM API에 전송하여,<br />실제 상담 결과가 이 영역에 표시되도록 연결할 예정입니다.`;
+
+      resultContent.classList.remove("result-placeholder");
+      resultContent.innerHTML = preview;
+    }
+
+    function resetForm() {
+      document.getElementById("nickname").value = "";
+      document.getElementById("mood").value = "";
+      document.getElementById("concern").value = "";
+      document.getElementById("goal").value = "";
+
+      const resultContent = document.getElementById("resultContent");
+      resultContent.classList.add("result-placeholder");
+      resultContent.innerHTML =
+        '입력이 초기화되었습니다.<br />다시 왼쪽에서 정보를 작성한 후 <b>“상담 요청 보내기”</b> 버튼을 눌러보세요.';
+    }
+
+    // 접속자 수 가상 증가 테스트 (단순 UI 연출용)
+    let viewer = 0;
+    function simulateTournament() {
+      viewer += Math.floor(Math.random() * 5) + 1;
+      document.getElementById("viewerCount").textContent = "Ready: " + viewer;
+    }
+  </script>
+</body>
+</html>
